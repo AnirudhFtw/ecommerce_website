@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-
+from app.models.user import User
+from app.dependencies import get_current_admin
 from app.database import get_db
 from app.models.category import Category
 from app.schemas.category import CategoryCreate, CategoryResponse
@@ -15,7 +16,8 @@ router = APIRouter(
 @router.post("/", response_model=CategoryResponse)
 def create_category(
     category: CategoryCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    admin: User = Depends(get_current_admin)
 ):
     existing = db.query(Category).filter(
         Category.name == category.name

@@ -7,7 +7,8 @@ from app.models.product import Product
 from app.models.user import User
 from app.schemas.cart import (
     CartItemCreate,
-    CartResponse
+    CartResponse,
+    CartItemUpdate
 )
 from app.dependencies import get_current_user
 
@@ -108,7 +109,7 @@ def add_to_cart(
 @router.put("/items/{item_id}", response_model=CartResponse)
 def update_cart_item(
     item_id: int,
-    item: CartItemCreate,
+    item: CartItemUpdate,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
@@ -136,6 +137,12 @@ def update_cart_item(
     product = db.query(Product).filter(
         Product.id == cart_item.product_id
     ).first()
+
+    if not product:
+        raise HTTPException(
+            status_code=404,
+            detail="Product not found"
+        )
 
     if item.quantity <= 0:
         raise HTTPException(

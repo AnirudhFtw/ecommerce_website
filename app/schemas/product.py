@@ -18,3 +18,10 @@ class ProductResponse(BaseModel):
     category_id: int
 
     model_config = ConfigDict(from_attributes=True)
+
+class ProductListResponse(BaseModel):
+    products: list[ProductResponse]
+    total: int
+    page: int
+    limit: int
+    total_pages: int

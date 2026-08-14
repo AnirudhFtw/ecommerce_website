@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, Float, String, ForeignKey
 from sqlalchemy.orm import relationship
 from enum import Enum
-
+from sqlalchemy import DateTime
 from app.database import Base
 
 
@@ -32,15 +32,27 @@ class Order(Base):
     status = Column(
         String(30),
         nullable=False,
-        default=OrderStatus.PENDING.value
+        default="PENDING"
     )
 
     user = relationship("User")
+
+    payment = relationship(
+        "Payment",
+        back_populates="order",
+        uselist=False,
+        cascade="all, delete-orphan"
+    )
 
     items = relationship(
         "OrderItem",
         back_populates="order",
         cascade="all, delete-orphan"
+    )
+
+    reserved_until = Column(
+    DateTime,
+    nullable=True
     )
 
 
