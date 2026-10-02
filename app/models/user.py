@@ -31,6 +31,11 @@ class User(Base):
         default=False
     )
 
+    is_vendor = Column(Boolean, nullable=False, default=False)
+    vendor_application_status = Column(String(20), nullable=False, default="NONE")
+    shop_name = Column(String(150), nullable=True)
+    vendor_application_note = Column(String(500), nullable=True)
+
     cart = relationship(
         "Cart",
         back_populates="user",

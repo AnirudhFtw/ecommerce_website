@@ -1,7 +1,6 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from app.schemas.payment import PaymentMode
 from app.models.order import OrderStatus
-from app.schemas.payment import PaymentMode
 
 class OrderUserResponse(BaseModel):
     id: int
@@ -15,6 +14,17 @@ class OrderItemResponse(BaseModel):
     product_id: int
     quantity: int
     price: float
+    vendor_order_id: int | None = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class VendorOrderResponse(BaseModel):
+    id: int
+    order_id: int
+    vendor_id: int | None
+    status: str
+    items: list[OrderItemResponse]
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -26,6 +36,7 @@ class OrderResponse(BaseModel):
     status: str
     user: OrderUserResponse
     items: list[OrderItemResponse]
+    vendor_orders: list[VendorOrderResponse] = Field(default_factory=list)
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -44,3 +55,9 @@ class CheckoutResponse(BaseModel):
     razorpay_key_id: str | None = None
     amount: float
     currency: str = "INR"
+
+
+class RazorpayPaymentVerification(BaseModel):
+    razorpay_order_id: str
+    razorpay_payment_id: str
+    razorpay_signature: str

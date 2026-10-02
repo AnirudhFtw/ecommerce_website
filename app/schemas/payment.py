@@ -12,6 +12,7 @@ class PaymentStatus(str, Enum):
     PAID = "PAID"
     FAILED = "FAILED"
     REFUNDED = "REFUNDED"
+    REFUND_PENDING = "REFUND_PENDING"
 
 
 class PaymentCreate(BaseModel):

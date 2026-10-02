@@ -5,6 +5,7 @@ from app.routers.categories import router as category_router
 from app.routers.auth import router as auth_router
 from app.routers.cart import router as cart_router
 from app.routers.orders import router as order_router
+from app.routers.vendors import router as vendor_router
 
 
 app = FastAPI(
@@ -19,6 +20,7 @@ app.include_router(category_router)
 app.include_router(auth_router)
 app.include_router(cart_router)
 app.include_router(order_router)
+app.include_router(vendor_router)
 
 @app.get("/")
 def home():

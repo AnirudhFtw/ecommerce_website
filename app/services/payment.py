@@ -1,4 +1,6 @@
 import importlib
+import hashlib
+import hmac
 import razorpay
 
 config_module = None
@@ -33,3 +35,17 @@ def create_razorpay_order(amount: float, receipt: str):
     }
 
     return client.order.create(data=data)
+
+
+def fetch_razorpay_payment(payment_id: str):
+    return client.payment.fetch(payment_id)
+
+
+def verify_razorpay_signature(order_id: str, payment_id: str, signature: str) -> bool:
+    message = f"{order_id}|{payment_id}".encode("utf-8")
+    expected = hmac.new(
+        settings.RAZORPAY_KEY_SECRET.encode("utf-8"),
+        message,
+        hashlib.sha256,
+    ).hexdigest()
+    return hmac.compare_digest(expected, signature)

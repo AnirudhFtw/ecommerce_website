@@ -58,3 +58,12 @@ def get_current_admin(
         )
 
     return current_user
+
+
+def get_current_vendor(current_user: User = Depends(get_current_user)):
+    if not current_user.is_vendor:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Approved vendor access required"
+        )
+    return current_user

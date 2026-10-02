@@ -19,4 +19,7 @@ class Product(Base):
         nullable=False
     )
 
+    vendor_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+
     category = relationship("Category", back_populates="products")
+    vendor = relationship("User")

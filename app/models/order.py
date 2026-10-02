@@ -8,9 +8,15 @@ from app.database import Base
 class OrderStatus(str, Enum):
     PENDING = "PENDING"
     CONFIRMED = "CONFIRMED"
+    PROCESSING = "PROCESSING"
     SHIPPED = "SHIPPED"
+    OUT_FOR_DELIVERY = "OUT_FOR_DELIVERY"
     DELIVERED = "DELIVERED"
     CANCELLED = "CANCELLED"
+    REJECTED = "REJECTED"
+    PARTIALLY_REJECTED = "PARTIALLY_REJECTED"
+    RETURNED = "RETURNED"
+    REFUNDED = "REFUNDED"
 
 
 class Order(Base):
@@ -50,6 +56,12 @@ class Order(Base):
         cascade="all, delete-orphan"
     )
 
+    vendor_orders = relationship(
+        "VendorOrder",
+        back_populates="order",
+        cascade="all, delete-orphan"
+    )
+
     reserved_until = Column(
     DateTime,
     nullable=True
@@ -78,6 +90,8 @@ class OrderItem(Base):
         nullable=False
     )
 
+    vendor_order_id = Column(Integer, ForeignKey("vendor_orders.id"), nullable=True)
+
     price = Column(
         Float,
         nullable=False
@@ -89,3 +103,17 @@ class OrderItem(Base):
     )
 
     product = relationship("Product")
+    vendor_order = relationship("VendorOrder", back_populates="items")
+
+
+class VendorOrder(Base):
+    __tablename__ = "vendor_orders"
+
+    id = Column(Integer, primary_key=True, index=True)
+    order_id = Column(Integer, ForeignKey("orders.id"), nullable=False)
+    vendor_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    status = Column(String(30), nullable=False, default="CONFIRMED")
+
+    order = relationship("Order", back_populates="vendor_orders")
+    vendor = relationship("User")
+    items = relationship("OrderItem", back_populates="vendor_order")
