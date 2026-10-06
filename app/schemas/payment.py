@@ -5,6 +5,7 @@ from pydantic import BaseModel
 class PaymentMode(str, Enum):
     ONLINE = "ONLINE"
     COD = "COD"
+    WALLET = "WALLET"
 
 
 class PaymentStatus(str, Enum):
@@ -13,6 +14,7 @@ class PaymentStatus(str, Enum):
     FAILED = "FAILED"
     REFUNDED = "REFUNDED"
     REFUND_PENDING = "REFUND_PENDING"
+    PARTIALLY_REFUNDED = "PARTIALLY_REFUNDED"
 
 
 class PaymentCreate(BaseModel):

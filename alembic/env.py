@@ -4,17 +4,26 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
+from config import settings
 from app.database import Base
 from app.models.product import Product
 from app.models.category import Category
 from app.models.user import User
 from app.models.cart import Cart, CartItem
-from app.models.order import Order, OrderItem
+from app.models.order import Order, OrderItem, VendorOrder
 from app.models.payment import Payment
+from app.models.customer import UserAddress, Wallet, WalletTransaction, WishlistItem, ProductReview, Notification, AccountToken
+from app.models.catalog import ProductImage, ProductSpecification
+from app.models.extras import Coupon, ReturnRequest, VendorPayout, CommissionSetting, SupportTicket, AuditLog, SiteSetting
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
+database_url = settings.DATABASE_URL
+if database_url.startswith(("postgresql://", "postgres://")):
+    prefix = "postgres://" if database_url.startswith("postgres://") else "postgresql://"
+    database_url = database_url.replace(prefix, "postgresql+psycopg2://", 1)
+config.set_main_option("sqlalchemy.url", database_url.replace("%", "%%"))
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

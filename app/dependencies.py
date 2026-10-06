@@ -30,19 +30,22 @@ def get_current_user(
             algorithms=[ALGORITHM]
         )
 
-        user_id = payload.get("sub")
-
-        if user_id is None:
+        user_id = int(payload.get("sub"))
+        if user_id <= 0:
             raise credentials_exception
 
     except JWTError:
         raise credentials_exception
 
-    user = db.query(User).filter(
-        User.id == int(user_id)
-    ).first()
+    except (TypeError, ValueError):
+        raise credentials_exception
+
+    user = db.query(User).filter(User.id == user_id).first()
 
     if user is None:
+        raise credentials_exception
+
+    if payload.get("token_version", 0) != user.token_version:
         raise credentials_exception
 
     return user

@@ -1,7 +1,8 @@
+from datetime import datetime
 from sqlalchemy import Column, Integer, Float, String, ForeignKey
 from sqlalchemy.orm import relationship
 from enum import Enum
-from sqlalchemy import DateTime
+from sqlalchemy import DateTime, Text
 from app.database import Base
 
 
@@ -66,6 +67,12 @@ class Order(Base):
     DateTime,
     nullable=True
     )
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    shipping_address = Column(Text, nullable=True)
+    coupon_code = Column(String(40), nullable=True)
+    discount_amount = Column(Float, nullable=False, default=0)
+    tax_amount = Column(Float, nullable=False, default=0)
+    shipping_amount = Column(Float, nullable=False, default=0)
 
 
 class OrderItem(Base):
@@ -113,6 +120,8 @@ class VendorOrder(Base):
     order_id = Column(Integer, ForeignKey("orders.id"), nullable=False)
     vendor_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     status = Column(String(30), nullable=False, default="CONFIRMED")
+    tracking_number = Column(String(120), nullable=True)
+    shipping_provider = Column(String(120), nullable=True)
 
     order = relationship("Order", back_populates="vendor_orders")
     vendor = relationship("User")

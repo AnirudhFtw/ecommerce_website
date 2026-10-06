@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Float, String, ForeignKey
+from sqlalchemy import Column, Integer, Float, String, ForeignKey, Numeric
 from sqlalchemy.orm import relationship
 
 from app.database import Base
@@ -41,6 +41,9 @@ class Payment(Base):
         String(100),
         nullable=True
     )
+
+    refund_id = Column(String(100), nullable=True)
+    refund_amount = Column(Numeric(12, 2), nullable=True)
 
     order = relationship(
         "Order",

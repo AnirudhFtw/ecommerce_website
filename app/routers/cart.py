@@ -45,7 +45,9 @@ def add_to_cart(
     current_user: User = Depends(get_current_user)
 ):
     product = db.query(Product).filter(
-        Product.id == item.product_id
+        Product.id == item.product_id,
+        Product.is_active.is_(True),
+        Product.is_approved.is_(True),
     ).first()
 
     if not product:
@@ -135,7 +137,9 @@ def update_cart_item(
         )
 
     product = db.query(Product).filter(
-        Product.id == cart_item.product_id
+        Product.id == cart_item.product_id,
+        Product.is_active.is_(True),
+        Product.is_approved.is_(True),
     ).first()
 
     if not product:

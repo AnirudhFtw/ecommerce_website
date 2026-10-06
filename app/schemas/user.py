@@ -1,10 +1,10 @@
-from pydantic import BaseModel, EmailStr, ConfigDict
+from pydantic import BaseModel, EmailStr, ConfigDict, Field
 
 
 class UserCreate(BaseModel):
-    name: str
+    name: str = Field(min_length=1, max_length=100)
     email: EmailStr
-    password: str
+    password: str = Field(min_length=8, max_length=128)
 
 
 class LoginRequest(BaseModel):
@@ -20,6 +20,7 @@ class UserResponse(BaseModel):
     is_vendor: bool = False
     vendor_application_status: str = "NONE"
     shop_name: str | None = None
+    email_verified: bool = False
 
     model_config = ConfigDict(from_attributes=True)
 

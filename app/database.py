@@ -1,16 +1,14 @@
-import os
-
-from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
+from config import settings
 
-load_dotenv()
+DATABASE_URL = settings.DATABASE_URL
+if not DATABASE_URL:
+    raise RuntimeError("DATABASE_URL env details not present")
 
-DATABASE_URL = os.getenv("DATABASE_URL")
-
-if DATABASE_URL.startswith("postgresql://"):
+if DATABASE_URL.startswith(("postgresql://", "postgres://")):
     DATABASE_URL = DATABASE_URL.replace(
-        "postgresql://",
+        "postgres://" if DATABASE_URL.startswith("postgres://") else "postgresql://",
         "postgresql+psycopg2://",
         1
     )
